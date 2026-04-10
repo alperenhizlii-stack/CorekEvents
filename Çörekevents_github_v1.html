@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ÇörekEvents">
+<meta name="theme-color" content="#0d0d10">
+<title>ÇörekEvents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+:root{
+  --bg:#0d0d10;--s1:#141418;--s2:#1b1b20;--s3:#232328;--s4:#2a2a30;
+  --bd:rgba(255,255,255,0.06);--bd2:rgba(255,255,255,0.11);--bd3:rgba(255,255,255,0.18);
+  --tx:#f0ede7;--tx2:#a09c96;--tx3:#5a5752;
+  --acc:#e9c84a;--acc2:rgba(233,200,74,0.12);
+  --grn:#3ecf7a;--grn2:rgba(62,207,122,0.1);
+  --blu:#5b9df5;--blu2:rgba(91,157,245,0.1);
+  --pur:#a07ef8;--pur2:rgba(160,126,248,0.1);
+  --red:#f07272;--red2:rgba(240,114,114,0.09);
+  --ora:#f09050;--ora2:rgba(240,144,80,0.1);
+  --pnk:#f07aaa;--pnk2:rgba(240,122,170,0.1);
+  --fh:'Syne',sans-serif;--fb:'DM Sans',sans-serif;
+}
+html,body{background:var(--bg);color:var(--tx);font-family:var(--fb);min-height:100vh;-webkit-font-smoothing:antialiased;}
+.wrap{max-width:430px;margin:0 auto;min-height:100vh;padding-bottom:80px;}
+
+/* HEADER */
+.hdr{background:rgba(13,13,16,0.97);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);padding:14px 16px 0;border-bottom:0.5px solid var(--bd);position:sticky;top:0;z-index:90;}
+.hdr-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.logo{font-family:var(--fh);font-size:20px;font-weight:800;letter-spacing:-0.4px;color:var(--acc);}
+.logo span{color:var(--tx);}
+.hdr-r{display:flex;align-items:center;gap:8px;}
+.cdot{width:8px;height:8px;border-radius:50%;background:var(--tx3);transition:background 0.4s;}
+.cdot.ok{background:var(--grn);}
+.cdot.err{background:var(--red);}
+.cdot.spin{background:var(--acc);animation:blink 0.8s ease-in-out infinite;}
+@keyframes blink{0%,100%{opacity:.2;}50%{opacity:1;}}
+.avrow{display:flex;}
+.av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;font-family:var(--fh);border:1.5px solid var(--bg);}
+.av-v{background:var(--acc);color:#000;z-index:2;}
+.av-a{background:var(--pur);color:#fff;margin-left:-6px;}
+.tabs{display:flex;}
+.tab{flex:1;padding:10px 4px;font-size:12px;font-weight:700;font-family:var(--fh);color:var(--tx3);cursor:pointer;border:none;background:transparent;border-bottom:2px solid transparent;transition:all 0.2s;letter-spacing:0.2px;}
+.tab.on{color:var(--acc);border-bottom-color:var(--acc);}
+.pg{display:none;}.pg.on{display:block;}
+
+/* KPI */
+.kpi-block{margin:14px 16px 0;background:var(--s1);border:0.5px solid var(--bd);border-radius:14px;padding:14px;}
+.kpi-lbl{font-family:var(--fh);font-size:9px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:1.3px;margin-bottom:12px;}
+.kpi-nums{display:flex;gap:6px;margin-bottom:14px;}
+.kn{flex:1;text-align:center;background:var(--s2);border-radius:8px;padding:10px 4px;}
+.kn-v{font-family:var(--fh);font-size:20px;font-weight:800;line-height:1;}
+.kn-l{font-size:9px;color:var(--tx3);margin-top:3px;}
+.rb-wrap{display:flex;flex-direction:column;gap:9px;}
+.rb-row{display:flex;flex-direction:column;gap:4px;}
+.rb-top{display:flex;justify-content:space-between;align-items:center;}
+.rb-name{font-size:11px;font-weight:600;font-family:var(--fh);display:flex;align-items:center;gap:5px;}
+.rb-pct{font-family:var(--fh);font-size:12px;font-weight:800;}
+.rb-track{height:7px;background:var(--s3);border-radius:4px;overflow:hidden;}
+.rb-track.big{height:11px;border-radius:6px;}
+.rb-fill{height:100%;border-radius:4px;transition:width 1.2s cubic-bezier(.4,0,.2,1);}
+.chip{font-size:8px;font-weight:800;font-family:var(--fh);padding:1px 5px;border-radius:4px;}
+.chip-v{background:var(--acc);color:#000;}
+.chip-a{background:var(--pur);color:#fff;}
+
+/* SYNC BAR */
+.sync-bar{background:rgba(62,207,122,0.04);border:0.5px solid rgba(62,207,122,0.1);border-radius:10px;padding:9px 12px;margin:10px 16px 0;display:flex;align-items:center;gap:8px;}
+.sync-txt{flex:1;font-size:10px;color:var(--tx3);}
+.sync-txt b{font-weight:600;}
+.sync-btn{font-size:12px;color:var(--grn);font-weight:800;cursor:pointer;font-family:var(--fh);background:transparent;border:none;padding:4px 8px;}
+
+/* NOTICE */
+.notice{background:rgba(233,200,74,0.07);border:0.5px solid rgba(233,200,74,0.2);border-radius:10px;padding:10px 13px;margin:10px 16px 0;font-size:11px;color:var(--tx2);line-height:1.6;}
+.notice b{color:var(--acc);}
+.notice a{color:var(--blu);}
+
+/* FILTERS */
+.flt-row{display:flex;gap:5px;padding:12px 16px 10px;overflow-x:auto;scrollbar-width:none;}
+.flt-row::-webkit-scrollbar{display:none;}
+.fp{padding:6px 14px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap;cursor:pointer;border:0.5px solid var(--bd2);background:transparent;color:var(--tx2);font-family:var(--fh);transition:all 0.15s;}
+.fp.on{background:var(--acc);color:#000;border-color:var(--acc);}
+
+/* EVENT CARDS */
+.ev-list{padding:0 16px;}
+.ev{background:var(--s1);border:0.5px solid var(--bd);border-radius:12px;padding:12px 13px;margin-bottom:8px;position:relative;overflow:hidden;transition:border-color 0.2s;}
+.ev:hover{border-color:var(--bd2);}
+.ev::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;}
+.ev.going::before{background:var(--grn);}
+.ev.ticket::before{background:var(--blu);}
+.ev.maybe::before{background:var(--acc);}
+.ev.nope{opacity:0.4;}
+.ev.nope::before{background:var(--s4);}
+.ev-hd{display:flex;justify-content:space-between;align-items:flex-start;gap:6px;margin-bottom:5px;}
+.ev-nm{font-family:var(--fh);font-size:14px;font-weight:700;line-height:1.2;flex:1;}
+.ev-pr{font-family:var(--fh);font-size:12px;font-weight:800;color:var(--acc);white-space:nowrap;}
+.ev-mid{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-bottom:7px;}
+.ev-dt,.ev-vn{font-size:10px;color:var(--tx3);}
+.bdg{font-size:9px;font-weight:800;padding:2px 6px;border-radius:4px;font-family:var(--fh);}
+.bg{background:var(--grn2);color:var(--grn);}
+.bt{background:var(--blu2);color:var(--blu);}
+.bm{background:var(--acc2);color:var(--acc);}
+.bn{background:var(--red2);color:var(--red);}
+.ev-ft{display:flex;align-items:center;justify-content:space-between;gap:6px;}
+.ev-ppl{display:flex;gap:4px;}
+.ptg{font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;font-family:var(--fh);}
+.pt-v{background:var(--acc2);color:var(--acc);}
+.pt-a{background:var(--pur2);color:var(--pur);}
+.ev-lnk{font-size:10px;color:var(--blu);text-decoration:none;font-weight:700;padding:3px 8px;border:0.5px solid var(--blu2);border-radius:5px;}
+.ev-notes{font-size:10px;color:var(--tx3);margin-top:6px;padding-top:6px;border-top:0.5px solid var(--bd);line-height:1.5;font-style:italic;}
+.next-badge{font-size:8px;font-weight:800;font-family:var(--fh);padding:1px 5px;border-radius:4px;background:rgba(62,207,122,0.15);color:var(--grn);margin-left:5px;vertical-align:middle;}
+
+/* ÇÖREK RATING RING */
+.cr-badge{display:flex;align-items:center;gap:4px;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.cr-ring{width:32px;height:32px;position:relative;flex-shrink:0;}
+.cr-ring svg{width:32px;height:32px;transform:rotate(-90deg);}
+.cr-ring-bg{fill:none;stroke:var(--s3);stroke-width:3;}
+.cr-ring-fg{fill:none;stroke-width:3;stroke-linecap:round;}
+.cr-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--fh);font-size:8px;font-weight:800;}
+.cr-lbl{font-size:9px;color:var(--tx3);}
+
+/* SECTION */
+.sec-sep{height:0.5px;background:var(--bd);margin:12px 0;}
+.sec-ttl{font-family:var(--fh);font-size:9px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:1.3px;padding:0 16px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;}
+.szn-pill{font-size:9px;font-weight:800;padding:1px 7px;border-radius:10px;font-family:var(--fh);}
+.sp3{background:var(--acc2);color:var(--acc);}
+
+/* SUGGESTIONS */
+.sug-flt{display:flex;gap:5px;padding:10px 16px 8px;overflow-x:auto;scrollbar-width:none;}
+.sug-flt::-webkit-scrollbar{display:none;}
+.sug-card{background:var(--s1);border:0.5px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:8px;transition:border-color 0.2s;}
+.sug-card:hover{border-color:var(--bd2);}
+.sug-hd{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:4px;}
+.sug-nm{font-family:var(--fh);font-size:14px;font-weight:700;flex:1;line-height:1.2;}
+.sug-mt{font-size:10px;color:var(--tx3);margin-bottom:7px;}
+.sug-why{font-size:11px;color:var(--tx2);line-height:1.6;margin-bottom:9px;}
+.sug-tags{display:flex;gap:4px;flex-wrap:wrap;}
+.stag{font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;font-family:var(--fh);}
+.st-f{background:var(--grn2);color:var(--grn);}
+.st-c{background:var(--blu2);color:var(--blu);}
+.st-n{background:var(--ora2);color:var(--ora);}
+.st-o{background:var(--acc2);color:var(--acc);}
+.st-p{background:var(--pnk2);color:var(--pnk);}
+.st-t{background:var(--pur2);color:var(--pur);}
+
+/* CITIES */
+.city-card{background:var(--s1);border:0.5px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:10px;cursor:pointer;transition:border-color 0.2s;}
+.city-card:hover{border-color:var(--bd2);}
+.city-hd{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px;}
+.city-nm{font-family:var(--fh);font-size:17px;font-weight:800;}
+.city-sub{font-size:10px;color:var(--tx3);margin-top:2px;}
+.city-tags{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:9px;}
+.ctg{font-size:10px;padding:2px 8px;border-radius:20px;background:var(--s3);color:var(--tx3);border:0.5px solid var(--bd);}
+.city-desc{font-size:11px;color:var(--tx2);line-height:1.6;margin-bottom:9px;}
+.city-desc b{color:var(--tx);font-weight:600;}
+.city-sep{height:0.5px;background:var(--bd);margin:8px 0;}
+.city-nl-ttl{font-size:9px;font-weight:800;font-family:var(--fh);color:var(--pur);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
+.city-nl-txt{font-size:11px;color:var(--tx3);line-height:1.5;}
+.vibs{display:flex;gap:4px;flex-wrap:wrap;margin-top:7px;}
+.vib{font-size:9px;padding:2px 8px;border-radius:20px;background:var(--pur2);color:var(--pur);border:0.5px solid rgba(160,126,248,0.15);}
+.city-cta{font-size:10px;color:var(--acc);margin-top:9px;font-weight:700;font-family:var(--fh);}
+
+/* RATING MODAL */
+.rm-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:300;align-items:flex-end;justify-content:center;}
+.rm-overlay.open{display:flex;}
+.rm-sheet{background:var(--s1);border-radius:20px 20px 0 0;padding:22px 18px calc(36px + env(safe-area-inset-bottom));width:100%;max-width:430px;border-top:0.5px solid var(--bd2);}
+.rm-handle{width:36px;height:4px;background:var(--s3);border-radius:2px;margin:0 auto 18px;}
+.rm-title{font-family:var(--fh);font-size:17px;font-weight:800;margin-bottom:3px;}
+.rm-sub{font-size:10px;color:var(--tx3);margin-bottom:16px;}
+.rm-dims{display:flex;flex-direction:column;gap:9px;margin-bottom:14px;}
+.rd-row{display:flex;align-items:center;gap:8px;}
+.rd-lbl{font-size:10px;font-weight:700;font-family:var(--fh);width:115px;flex-shrink:0;color:var(--tx2);}
+.rd-trk{flex:1;height:6px;background:var(--s3);border-radius:3px;overflow:hidden;}
+.rd-fill{height:100%;border-radius:3px;transition:width 0.8s ease;}
+.rd-v{font-family:var(--fh);font-size:11px;font-weight:800;width:24px;text-align:right;flex-shrink:0;}
+.rm-verdict{background:var(--s2);border-radius:10px;padding:11px 13px;font-size:11px;color:var(--tx2);line-height:1.7;margin-bottom:14px;}
+.rm-close{width:100%;padding:12px;background:var(--s3);border:none;border-radius:10px;color:var(--tx);font-size:13px;font-weight:700;font-family:var(--fh);cursor:pointer;}
+
+/* LOADING */
+.ld-wrap{text-align:center;padding:40px 16px;font-size:12px;color:var(--tx3);}
+.ld-dots{display:flex;justify-content:center;gap:6px;margin-top:12px;}
+.ld-dot{width:6px;height:6px;border-radius:50%;background:var(--acc);animation:ldp 1.2s ease-in-out infinite;}
+.ld-dot:nth-child(2){animation-delay:.2s;}
+.ld-dot:nth-child(3){animation-delay:.4s;}
+@keyframes ldp{0%,100%{opacity:.2;}50%{opacity:1;}}
+.empty-state{text-align:center;padding:40px 16px;font-size:12px;color:var(--tx3);line-height:2;}
+.page-pad{padding:0 16px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-top">
+    <div class="logo">Çörek<span>Events</span></div>
+    <div class="hdr-r">
+      <div class="cdot spin" id="cdot" title="Sheets bağlantı durumu"></div>
+      <div class="avrow">
+        <div class="av av-v">V</div>
+        <div class="av av-a">A</div>
+      </div>
+    </div>
+  </div>
+  <div class="tabs">
+    <button class="tab on" onclick="goTab(0,this)">Tracker</button>
+    <button class="tab" onclick="goTab(1,this)">Suggestions</button>
+    <button class="tab" onclick="goTab(2,this)">Travel</button>
+  </div>
+</div>
+
+<!-- TRACKER -->
+<div class="pg on" id="pg0">
+  <div class="kpi-block">
+    <div class="kpi-lbl">2026 Realization — ÇörekEvents</div>
+    <div class="kpi-nums">
+      <div class="kn"><div class="kn-v" style="color:var(--grn)" id="kn-g">—</div><div class="kn-l">Gidildi</div></div>
+      <div class="kn"><div class="kn-v" style="color:var(--blu)" id="kn-t">—</div><div class="kn-l">Bilet</div></div>
+      <div class="kn"><div class="kn-v" style="color:var(--acc)" id="kn-m">—</div><div class="kn-l">Planlandı</div></div>
+      <div class="kn"><div class="kn-v" style="color:var(--tx3)" id="kn-n">—</div><div class="kn-l">Pas</div></div>
+    </div>
+    <div class="rb-wrap">
+      <div class="rb-row">
+        <div class="rb-top"><div class="rb-name" style="font-size:12px;color:var(--tx);">Genel Realization</div><div class="rb-pct" style="color:var(--acc)" id="pct-g">—</div></div>
+        <div class="rb-track big"><div class="rb-fill" id="bar-g" style="width:0%;background:var(--acc);"></div></div>
+      </div>
+      <div class="rb-row">
+        <div class="rb-top"><div class="rb-name"><span class="chip chip-v">V</span>Volkan</div><div class="rb-pct" style="color:var(--acc)" id="pct-v">—</div></div>
+        <div class="rb-track"><div class="rb-fill" id="bar-v" style="width:0%;background:var(--acc);"></div></div>
+      </div>
+      <div class="rb-row">
+        <div class="rb-top"><div class="rb-name"><span class="chip chip-a">A</span>Alperen</div><div class="rb-pct" style="color:var(--pur)" id="pct-a">—</div></div>
+        <div class="rb-track"><div class="rb-fill" id="bar-a" style="width:0%;background:var(--pur);"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sync-bar">
+    <div class="sync-txt" id="sync-txt"><b>Bağlanıyor...</b></div>
+    <button class="sync-btn" onclick="loadSheets()">↻ Yenile</button>
+  </div>
+
+  <div id="sheets-notice" class="notice" style="display:none;">
+    <b>Sheets public değil.</b> Veriyi görmek için Sheets'i aç → Share → "Anyone with the link" → Viewer → Save
+  </div>
+
+  <div class="flt-row">
+    <button class="fp on" onclick="setFlt('upcoming',this)">Yaklaşan</button>
+    <button class="fp" onclick="setFlt('ticket',this)">Bilet</button>
+    <button class="fp" onclick="setFlt('maybe',this)">Planlandı</button>
+    <button class="fp" onclick="setFlt('going',this)">Gidildi</button>
+    <button class="fp" onclick="setFlt('all',this)">Tümü</button>
+  </div>
+  <div class="ev-list" id="ev-list">
+    <div class="ld-wrap">Sheets'ten yükleniyor...<div class="ld-dots"><div class="ld-dot"></div><div class="ld-dot"></div><div class="ld-dot"></div></div></div>
+  </div>
+</div>
+
+<!-- SUGGESTIONS -->
+<div class="pg" id="pg1">
+  <div style="padding:12px 16px 4px;font-size:11px;color:var(--tx3);">2026 · En yakın tarihten · Dokun → ÇörekRating detayı</div>
+  <div class="sug-flt">
+    <button class="fp on" onclick="setSFlt('all',this)">Tümü</button>
+    <button class="fp" onclick="setSFlt('istanbul',this)">İstanbul</button>
+    <button class="fp" onclick="setSFlt('turkey',this)">Türkiye</button>
+    <button class="fp" onclick="setSFlt('europe',this)">Avrupa</button>
+    <button class="fp" onclick="setSFlt('festival',this)">Festival</button>
+    <button class="fp" onclick="setSFlt('concert',this)">Konser</button>
+  </div>
+  <div class="page-pad" id="sug-list"></div>
+</div>
+
+<!-- TRAVEL -->
+<div class="pg" id="pg2">
+  <div style="padding:12px 16px 4px;font-size:11px;color:var(--tx3);">ÇörekRating sıralı · Nightlife, dating ve müzik odaklı · Dokun → detay</div>
+  <div class="page-pad" id="city-list"></div>
+</div>
+
+</div><!-- /wrap -->
+
+<!-- RATING MODAL -->
+<div class="rm-overlay" id="rmo" onclick="closeR(event)">
+  <div class="rm-sheet">
+    <div class="rm-handle"></div>
+    <div class="rm-title" id="rm-t">—</div>
+    <div class="rm-sub" id="rm-s">ÇörekRating</div>
+    <div class="rm-dims" id="rm-d"></div>
+    <div class="rm-verdict" id="rm-v"></div>
+    <button class="rm-close" onclick="closeR()">Kapat</button>
+  </div>
+</div>
+
+<script>
+var SHEET_ID = '1G94FBJXcidVKkDpUsw9gyCHgmFynpiSeoQnFFhy_UNY';
+var TODAY = new Date();  // Her zaman bugünün tarihi
+var liveEvents = [];
+var curFlt = 'upcoming';
+var sFlt = 'all';
+
+var FALLBACK = [
+  {name:'Adamlar',dateStr:'2026-04-12',venue:'TBD',status:'maybe',price:900,link:null,volkan:true,alperen:true,score:null,notes:'Abilerimiz. Toplar gelebilir.',season:3},
+  {name:'Mitski',dateStr:'2026-05-02',venue:'TBD',status:'ticket',price:2500,link:null,volkan:false,alperen:true,score:null,notes:'Ankaralı Merve maybe?',season:3},
+  {name:'Kokteyl Festivali 2026',dateStr:'2026-06-20',venue:'TBD',status:'ticket',price:850,link:null,volkan:true,alperen:true,score:null,notes:'Abiler, genel kokteyl.',season:3},
+];
+
+var SUGGESTIONS=[
+  {name:'Adamlar',geo:'istanbul',type:['concert'],dateStr:'2026-04-12',venue:'İstanbul',why:'Abiler. Her Adamlar konseri dataset\'te pozitif. Düşük risk yüksek iyi zaman.',tags:['st-c'],cr:{music:8,nightlife:6,social:7,vibe:8,budget:9},verdict:'Adamlar konserine her zaman gidilir. Tanıdık kalabalık rahat atmosfer.'},
+  {name:'Mitski',geo:'istanbul',type:['concert'],dateStr:'2026-05-02',venue:'İstanbul',why:'Sad/indie estetik kitlesi. Daddy issues crowd guaranteed. Alperen bilet aldı.',tags:['st-c','st-t'],cr:{music:8,nightlife:4,social:7,vibe:9,budget:6},verdict:'Müzik kalitesi yüksek. Kitle niche ama o niche içinde çok yoğun.'},
+  {name:'Kokteyl Festivali 2026',geo:'istanbul',type:['festival'],dateStr:'2026-06-20',venue:'İstanbul',why:'İki sezonda da 9/10 cimcime skoru. Mixed educated crowd, açıkhava.',tags:['st-f','st-o','st-n'],cr:{music:6,nightlife:9,social:10,vibe:8,budget:7},verdict:'ÇörekEvents\'in en kanıtlı etkinliği. Social ve nightlife İstanbul zirvesi.'},
+  {name:'Primavera Sound İstanbul',geo:'istanbul',type:['festival','concert'],dateStr:'2026-07-01',venue:'Küçükçiftlik',why:'Indie/alt format, international acts. Foster The People + Empire of the Sun tarzı crowd.',tags:['st-f','st-c'],cr:{music:10,nightlife:7,social:8,vibe:9,budget:6},verdict:'Müzik zevkiyle en yüksek örtüşme. Fontaines D.C. tarzı bandlerin sahnesi.'},
+  {name:'İstanbul Caz Festivali',geo:'istanbul',type:['festival'],dateStr:'2026-07-10',venue:'Harbiye + Boğaz',why:'Kültürlü diverse kitle, Boğaz manzarası.',tags:['st-f','st-o'],cr:{music:7,nightlife:6,social:8,vibe:8,budget:9},verdict:'Açık mekan avantajı. Daha az party daha çok atmosfer.'},
+  {name:'Parcels – İstanbul',geo:'istanbul',type:['concert'],dateStr:'2026-08-01',venue:'Küçükçiftlik',why:'Geçen sezon 8/10 cimcime. Funky educated crowd. Dataset\'te düşünülüyor kalmıştı.',tags:['st-c'],cr:{music:9,nightlife:6,social:8,vibe:9,budget:7},verdict:'Bu sezon kesinlikle kaçırılmamalı.'},
+  {name:'Primavera Sound Barcelona',geo:'europe',type:['festival','concert'],dateStr:'2026-05-28',venue:'Barcelona, İspanya',why:'Fontaines D.C., Parcels gibi bandler sahne alır. Müzik zevkinizle tam örtüşme.',tags:['st-f','st-c'],cr:{music:10,nightlife:8,social:8,vibe:10,budget:5},verdict:'Müzik için Avrupa\'nın en doğru festivali.'},
+  {name:'Sonar Festival',geo:'europe',type:['festival'],dateStr:'2026-06-19',venue:'Barcelona, İspanya',why:'Electronic/indie mix. Ben Böhmer tarzı acts. Barcelona nightlife kombine.',tags:['st-f','st-n'],cr:{music:9,nightlife:10,social:8,vibe:9,budget:5},verdict:'Ben Böhmer konserinin 10 kat büyük versiyonu. Barcelona ile birleşince perfect week.'},
+  {name:'Exit Festival',geo:'europe',type:['festival'],dateStr:'2026-07-10',venue:'Novi Sad, Sırbistan',why:'IST-Belgrad ucuz. Kale içi sahne. Budget ve nightlife Avrupa en iyisi.',tags:['st-f','st-n','st-o'],cr:{music:8,nightlife:10,social:9,vibe:10,budget:9},verdict:'Budget/experience oranında Avrupa\'nın en iyi festivali.'},
+  {name:'Sziget Festival',geo:'europe',type:['festival'],dateStr:'2026-08-06',venue:'Budapeşte, Macaristan',why:'Ada üzerinde 7 gün. Ruin barlar. Social açıdan zirve.',tags:['st-f','st-n','st-p'],cr:{music:9,nightlife:10,social:10,vibe:10,budget:7},verdict:'Social ve nightlife açısından Avrupa\'nın zirvesi. Dating off the charts.'},
+  {name:'Outlook Festival',geo:'europe',type:['festival'],dateStr:'2026-08-27',venue:'Pula, Hırvatistan',why:'Antik kale + sahil. IST-Split uçuşu var.',tags:['st-f','st-o','st-n'],cr:{music:8,nightlife:9,social:9,vibe:9,budget:7},verdict:'Kale sahnesinde sabah konser eşsiz. Hırvatistan sahil tatiline ekle.'},
+  {name:'Oktoberfest',geo:'europe',type:['festival'],dateStr:'2026-09-19',venue:'München, Almanya',why:'Uluslararası mix, bira, dans. Erkekler arası klasik Avrupa trip.',tags:['st-f','st-n','st-p'],cr:{music:4,nightlife:9,social:10,vibe:8,budget:6},verdict:'Social experience Avrupa\'nın en yükseği. Abilerle must-go.'},
+];
+
+var CITIES=[
+  {name:'Barcelona',country:'İspanya',flag:'🇪🇸',budget:'€€',tags:['Müzik','Plaj','Nightlife','Mimari'],desc:'<b>Neden:</b> Primavera + Sonar base camp. Indie/alt crowd. El Born kozmopolit. İspanyol kız + expat mix harika.',nl:'Razzmatazz (4 oda elektronik), Sala Apolo (indie/alt), Pacha. Gece 2\'den sabah 6\'ya.',vibes:['Elektronik','Indie','Techno','Rooftop'],cr:{music:10,nightlife:10,social:9,tourist:9,dating:9,budget:6},verdict:'Müzik zevkiyle en yüksek örtüşme. Nightlife kalitesi Avrupa zirvesinde.'},
+  {name:'Budapeşte',country:'Macaristan',flag:'🇭🇺',budget:'€',tags:['Ruin Barlar','Sziget','Ucuz','Termal'],desc:'<b>Neden:</b> Sziget Festival evi. Ruin bar kültürü özgün. Tuna kenarı gece muhteşem.',nl:'Szimpla Kert (dünyanın en ünlü ruin barı), Instant-Fogas, Gozsdu Udvar.',vibes:['Ruin Barlar','Rock','Festival','Termal'],cr:{music:8,nightlife:9,social:10,tourist:9,dating:9,budget:10},verdict:'Budget/kalite oranında Avrupa zirvesi. Sziget ile birleştir.'},
+  {name:'Novi Sad / Belgrad',country:'Sırbistan',flag:'🇷🇸',budget:'€',tags:['Exit Festival','Ucuz','Balkan','Splav'],desc:'<b>Neden:</b> Exit Festival kalesi. Belgrad splav kültürü (Tuna\'daki yüzen kulüpler). IST-Belgrad çok ucuz.',nl:'Exit kale sahneleri, Belgrad Splav kulüpler. Gece hiç bitmez.',vibes:['Festival','Balkan','Splav','Party'],cr:{music:8,nightlife:10,social:10,tourist:7,dating:9,budget:10},verdict:'Budget ve nightlife zirvede. Balkan enerjisi unbeatable.'},
+  {name:'Berlin',country:'Almanya',flag:'🇩🇪',budget:'€€',tags:['Techno','Sanat','Underground','Tarihi'],desc:'<b>Neden:</b> Dünyanın techno başkenti. Berghain deneyimi. East Side Gallery + müzeler.',nl:'Berghain/Panorama Bar, Tresor, Sisyphos. Gece 4\'te açılıyor 12-16 saat.',vibes:['Techno','Minimal','Dark','Underground'],cr:{music:9,nightlife:10,social:7,tourist:8,dating:7,budget:8},verdict:'Underground müzik için dünyanın başkenti. Müzik için zorunlu ziyaret.'},
+  {name:'Amsterdam',country:'Hollanda',flag:'🇳🇱',budget:'€€€',tags:['Konser','Kanallar','Liberal','Canlı Müzik'],desc:'<b>Neden:</b> Paradiso ve Melkweg efsanevi konser mekanları. Kanallar boyunca bar kültürü.',nl:'Paradiso (ikonik live music), Shelter Amsterdam, De School.',vibes:['Live Music','Underground','Festival','Rahat'],cr:{music:9,nightlife:8,social:9,tourist:9,dating:8,budget:5},verdict:'Live music için en iyi şehirlerden biri. Pahalı ama değer.'},
+  {name:'Lizbon',country:'Portekiz',flag:'🇵🇹',budget:'€€',tags:['Fado','NOS Alive','Plaj','Güneş'],desc:'<b>Neden:</b> Güney Avrupa\'nın rising star şehri. NOS Alive festival (Temmuz). Sintra + Cascais.',nl:'LX Factory cuma gecesi, Bairro Alto, Pink Street, Lux Frágil rooftop.',vibes:['Fado','Indie','Festival','Beach'],cr:{music:8,nightlife:8,social:9,tourist:10,dating:8,budget:7},verdict:'Turistik açıdan Avrupa\'nın en çekici şehirlerinden. NOS Alive ile birleştirin.'},
+];
+
+function parseDate(s){
+  if(!s)return null;
+  var m=String(s).match(/(\d{4})-(\d{1,2})-(\d{1,2})/);
+  if(m)return new Date(+m[1],+m[2]-1,+m[3]);
+  return null;
+}
+function fmtDate(s){
+  var d=parseDate(s);
+  if(!d)return String(s||'—');
+  return d.toLocaleDateString('tr-TR',{day:'numeric',month:'short',year:'numeric'});
+}
+function crScore(cr){var v=Object.values(cr);return Math.round(v.reduce(function(a,b){return a+b;},0)/v.length*10)/10;}
+function crColor(s){return s>=8?'var(--grn)':s>=6?'var(--acc)':'var(--red)';}
+function crRing(score,color){
+  var r=12,circ=2*Math.PI*r,offset=circ-(score/10)*circ;
+  return '<div class="cr-ring"><svg viewBox="0 0 32 32"><circle class="cr-ring-bg" cx="16" cy="16" r="'+r+'"/><circle class="cr-ring-fg" cx="16" cy="16" r="'+r+'" stroke="'+color+'" stroke-dasharray="'+circ.toFixed(1)+'" stroke-dashoffset="'+offset.toFixed(1)+'"/></svg><div class="cr-num" style="color:'+color+'">'+score.toFixed(1)+'</div></div>';
+}
+
+var _rmCR={};
+function openR(name,sub){
+  var cr=_rmCR[name]||{};
+  var DIM={music:'Müzik Uyumu',nightlife:'Nightlife',social:'Social/Dating',vibe:'Vibe',tourist:'Turistik',budget:'Bütçe'};
+  document.getElementById('rm-t').textContent=name;
+  document.getElementById('rm-s').textContent=sub||'ÇörekRating';
+  var h='';
+  for(var k in DIM){if(cr[k]==null)continue;var v=cr[k],c=crColor(v);h+='<div class="rd-row"><div class="rd-lbl">'+DIM[k]+'</div><div class="rd-trk"><div class="rd-fill" style="width:'+v*10+'%;background:'+c+'"></div></div><div class="rd-v" style="color:'+c+'">'+v+'</div></div>';}
+  document.getElementById('rm-d').innerHTML=h;
+  document.getElementById('rm-v').textContent=_rmCR[name+'_verdict']||'—';
+  document.getElementById('rmo').classList.add('open');
+}
+function closeR(e){if(!e||e.target===document.getElementById('rmo'))document.getElementById('rmo').classList.remove('open');}
+
+function stBadge(s){
+  if(s==='going')return'<span class="bdg bg">Gidildi</span>';
+  if(s==='ticket')return'<span class="bdg bt">Bilet Alındı</span>';
+  if(s==='maybe')return'<span class="bdg bm">Planlandı</span>';
+  return'<span class="bdg bn">Pas</span>';
+}
+function stClass(s){return s==='going'?'going':s==='ticket'?'ticket':s==='maybe'?'maybe':'nope';}
+
+function evCard(e){
+  var pp=(e.volkan?'<span class="ptg pt-v">V</span>':'')+(e.alperen?'<span class="ptg pt-a">A</span>':'');
+  var lk=e.link?'<a class="ev-lnk" href="'+e.link+'" target="_blank">Bilet →</a>':'';
+  var nt=e.notes?'<div class="ev-notes">'+e.notes+'</div>':'';
+  var sc=e.score!=null?parseFloat(e.score):null;
+  var ring='';
+  if(sc!=null){
+    var rk='ev_'+e.name.replace(/\s/g,'_');
+    _rmCR[rk]={music:sc,vibe:sc};
+    _rmCR[rk+'_verdict']='Cimcime skoru: '+sc+'/10';
+    ring='<div class="cr-badge" onclick="openR(\''+rk+'\',\'Geçmiş etkinlik\')">'+crRing(sc,crColor(sc))+'<span class="cr-lbl">cimcime</span></div>';
+  }
+  var d=parseDate(e.dateStr);
+  var isClose=d&&d>=TODAY&&(d-TODAY)<30*86400000;
+  return'<div class="ev '+stClass(e.status)+'">'
+    +'<div class="ev-hd"><div class="ev-nm">'+e.name+(isClose?'<span class="next-badge">Yakın!</span>':'')+'</div>'
+    +'<div class="ev-pr">'+(e.price?e.price+'₺':'—')+'</div></div>'
+    +'<div class="ev-mid"><span class="ev-dt">'+fmtDate(e.dateStr)+'</span>'
+    +(e.venue&&e.venue!=='TBD'?' <span style="color:var(--bd3)">·</span> <span class="ev-vn">'+e.venue+'</span>':'')
+    +' '+stBadge(e.status)+'</div>'
+    +'<div class="ev-ft"><div class="ev-ppl">'+pp+'</div>'+ring+lk+'</div>'+nt+'</div>';
+}
+
+function renderEvents(){
+  var evs=liveEvents.filter(function(e){
+    var d=parseDate(e.dateStr);
+    if(!d||d.getFullYear()<2026)return false;
+    if(curFlt==='upcoming')return e.status!=='nope'&&d>=TODAY;
+    if(curFlt==='ticket')return e.status==='ticket';
+    if(curFlt==='going')return e.status==='going';
+    if(curFlt==='maybe')return e.status==='maybe';
+    if(curFlt==='all')return e.status!=='nope';
+    return true;
+  }).sort(function(a,b){return(parseDate(a.dateStr)||new Date('2099'))-(parseDate(b.dateStr)||new Date('2099'));});
+  if(!evs.length){document.getElementById('ev-list').innerHTML='<div class="empty-state">2026\'da bu filtreyle etkinlik yok.</div>';return;}
+  var upcoming=evs.filter(function(e){var d=parseDate(e.dateStr);return d&&d>=TODAY;});
+  var past=evs.filter(function(e){var d=parseDate(e.dateStr);return !d||d<TODAY;});
+  var h='';
+  if(upcoming.length){h+='<div class="sec-ttl">Yaklaşan <span class="szn-pill sp3">2026</span></div>';upcoming.forEach(function(e){h+=evCard(e);});}
+  if(past.length){if(upcoming.length)h+='<div class="sec-sep" style="margin:12px 0;"></div>';h+='<div class="sec-ttl">Tamamlandı <span class="szn-pill" style="background:var(--bd2);color:var(--tx3);">2026</span></div>';past.forEach(function(e){h+=evCard(e);});}
+  document.getElementById('ev-list').innerHTML=h;
+}
+
+function calcKPI(){
+  var evs=liveEvents.filter(function(e){var d=parseDate(e.dateStr);return d&&d.getFullYear()>=2026;});
+  var gn=evs.filter(function(e){return e.status==='going';}).length;
+  var tk=evs.filter(function(e){return e.status==='ticket';}).length;
+  var my=evs.filter(function(e){return e.status==='maybe';}).length;
+  var np=evs.filter(function(e){return e.status==='nope';}).length;
+  var pl=evs.filter(function(e){return['going','ticket','maybe'].indexOf(e.status)>-1;}).length;
+  document.getElementById('kn-g').textContent=gn;
+  document.getElementById('kn-t').textContent=tk;
+  document.getElementById('kn-m').textContent=my;
+  document.getElementById('kn-n').textContent=np;
+  var gp=pl?Math.round(gn/pl*100):0;
+  var vpl=evs.filter(function(e){return e.volkan&&['going','ticket','maybe'].indexOf(e.status)>-1;}).length;
+  var vgn=evs.filter(function(e){return e.volkan&&e.status==='going';}).length;
+  var vp=vpl?Math.round(vgn/vpl*100):0;
+  var apl=evs.filter(function(e){return e.alperen&&['going','ticket','maybe'].indexOf(e.status)>-1;}).length;
+  var agn=evs.filter(function(e){return e.alperen&&e.status==='going';}).length;
+  var ap=apl?Math.round(agn/apl*100):0;
+  setTimeout(function(){
+    document.getElementById('pct-g').textContent=gp+'%';document.getElementById('bar-g').style.width=gp+'%';
+    document.getElementById('pct-v').textContent=vp+'%';document.getElementById('bar-v').style.width=vp+'%';
+    document.getElementById('pct-a').textContent=ap+'%';document.getElementById('bar-a').style.width=ap+'%';
+  },600);
+}
+
+function parseGviz(data,season,out){
+  if(!data||!data.table||!data.table.rows)return;
+  data.table.rows.forEach(function(row){
+    if(!row.c||!row.c[0]||row.c[0].v==null)return;
+    var get=function(i){return(row.c&&row.c[i]&&row.c[i].v!=null)?row.c[i].v:null;};
+    var name=String(get(0)||'').trim();
+    if(!name||name==='Campaign'||name==='Band/Event')return;
+    var rawDate=get(1);
+    var dateStr='';
+    if(rawDate){
+      if(typeof rawDate==='string'){
+        var dm=String(rawDate).match(/Date\((\d+),(\d+),(\d+)\)/);
+        if(dm)dateStr=dm[1]+'-'+('0'+(+dm[2]+1)).slice(-2)+'-'+('0'+dm[3]).slice(-2);
+        else dateStr=String(rawDate).substring(0,10);
+      }
+    }
+    if(row.c&&row.c[1]&&row.c[1].f){
+      var fv=String(row.c[1].f);
+      var fm=fv.match(/(\d{1,2})[\.\/](\d{1,2})[\.\/](\d{4})/);
+      if(fm)dateStr=fm[3]+'-'+('0'+fm[2]).slice(-2)+'-'+('0'+fm[1]).slice(-2);
+    }
+    var rawSt=String(get(2)||'').trim();
+    var rawStL=rawSt.toLowerCase();
+    var status='maybe';
+    if(rawStL.indexOf('gidildi')>-1||rawStL.indexOf('continue')>-1)status='going';
+    else if(rawStL.indexOf('bilet')>-1)status='ticket';
+    else if(rawStL.indexOf('gidilmez')>-1||rawStL.indexOf('stop')>-1)status='nope';
+    var pm=String(get(3)||'').match(/\d+/);
+    var price=pm?parseInt(pm[0]):null;
+    var notes=String(get(4)||'').trim();
+    var link='';
+    for(var c=5;c<Math.min(11,row.c?row.c.length:0);c++){var cv=String((row.c[c]&&row.c[c].v)||'');if(cv.indexOf('http')===0){link=cv;break;}}
+    var venue=String(get(7)||get(6)||'').trim();
+    if(venue.indexOf('http')===0)venue='';
+    var score=null;
+    for(var c2=4;c2<Math.min(9,row.c?row.c.length:0);c2++){var sm=String((row.c[c2]&&row.c[c2].v)||'').match(/(\d+)\s*\/\s*10/);if(sm){score=parseInt(sm[1]);break;}}
+    var hasV=rawStL.indexOf('volkan')>-1,hasA=rawStL.indexOf('alperen')>-1;
+    out.push({name:name,dateStr:dateStr,venue:venue||'TBD',status:status,price:price,link:link||null,volkan:hasV||(!hasV&&!hasA),alperen:hasA||(!hasV&&!hasA),score:score,notes:notes||null,season:season});
+  });
+}
+
+function loadSheets(){
+  var dot=document.getElementById('cdot'),txt=document.getElementById('sync-txt');
+  dot.className='cdot spin';
+  txt.innerHTML='<b>Sheets\'e bağlanıyor...</b>';
+  document.getElementById('sheets-notice').style.display='none';
+  var all=[];
+  var sheets=[{gid:'0',season:1},{gid:'1',season:2},{gid:'2',season:3}];
+  var done=0;
+  var timer=setTimeout(function(){if(!liveEvents.length)useFallback('Timeout');},10000);
+
+  sheets.forEach(function(s){
+    var cb='gv_'+s.gid+'_'+Date.now();
+    var sc=document.createElement('script');
+    sc.src='https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:json;responseHandler:'+cb+'&gid='+s.gid;
+    window[cb]=function(data){
+      sc.remove();delete window[cb];
+      try{parseGviz(data,s.season,all);}catch(e){}
+      if(++done===sheets.length){clearTimeout(timer);onLoaded(all);}
+    };
+    sc.onerror=function(){sc.remove();delete window[cb];if(++done===sheets.length){clearTimeout(timer);onLoaded(all);}};
+    document.head.appendChild(sc);
+  });
+}
+
+function onLoaded(all){
+  if(all.length){
+    liveEvents=all;
+    document.getElementById('cdot').className='cdot ok';
+    document.getElementById('sync-txt').innerHTML='<b style="color:var(--grn)">Sheets bağlı</b> · '+all.length+' etkinlik · '+new Date().toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'});
+  } else {
+    useFallback('Veri gelmedi');
+    document.getElementById('sheets-notice').style.display='block';
+  }
+  renderEvents();calcKPI();
+}
+
+function useFallback(r){
+  document.getElementById('cdot').className='cdot err';
+  document.getElementById('sync-txt').innerHTML='<b style="color:var(--ora)">Sheets bağlanamadı</b> · Yerel veri';
+  liveEvents=FALLBACK;renderEvents();calcKPI();
+}
+
+function renderSuggestions(){
+  var TL={'st-f':'Festival','st-c':'Konser','st-n':'Nightlife','st-o':'Açıkhava','st-p':'Party','st-t':'Niche'};
+  var list=SUGGESTIONS.filter(function(s){
+    var d=parseDate(s.dateStr);if(!d||d<TODAY)return false;
+    if(sFlt==='all')return true;
+    if(sFlt==='istanbul')return s.geo==='istanbul';
+    if(sFlt==='turkey')return s.geo==='turkey'||s.geo==='istanbul';
+    if(sFlt==='europe')return s.geo==='europe';
+    if(sFlt==='festival')return s.type.indexOf('festival')>-1;
+    if(sFlt==='concert')return s.type.indexOf('concert')>-1;
+    return true;
+  }).sort(function(a,b){return(parseDate(a.dateStr)||new Date('2099'))-(parseDate(b.dateStr)||new Date('2099'));});
+  document.getElementById('sug-list').innerHTML=list.map(function(s){
+    var sc=crScore(s.cr),col=crColor(sc);
+    var isClose=(parseDate(s.dateStr)-TODAY)<60*86400000;
+    var rk='sug_'+s.name.replace(/\s/g,'_');
+    _rmCR[rk]=s.cr;_rmCR[rk+'_verdict']=s.verdict;
+    return'<div class="sug-card">'
+      +'<div class="sug-hd"><div class="sug-nm">'+s.name+(isClose?'<span class="next-badge">Yakın!</span>':'')+'</div>'
+      +'<div class="cr-badge" onclick="openR(\''+rk+'\',\'ÇörekRating\')">'+crRing(sc,col)+'</div></div>'
+      +'<div class="sug-mt">'+fmtDate(s.dateStr)+' · '+s.venue+'</div>'
+      +'<div class="sug-why">'+s.why+'</div>'
+      +'<div class="sug-tags">'+s.tags.map(function(t){return'<span class="stag '+t+'">'+(TL[t]||t)+'</span>';}).join('')+'</div>'
+      +'</div>';
+  }).join('')||'<div class="empty-state">Bu kategoride yaklaşan etkinlik yok.</div>';
+}
+
+function renderCities(){
+  var sorted=[].concat(CITIES).sort(function(a,b){return crScore(b.cr)-crScore(a.cr);});
+  document.getElementById('city-list').innerHTML=sorted.map(function(c){
+    var sc=crScore(c.cr),col=crColor(sc);
+    var rk='city_'+c.name.replace(/\s/g,'_');
+    _rmCR[rk]=c.cr;_rmCR[rk+'_verdict']=c.verdict;
+    return'<div class="city-card" onclick="openR(\''+rk+'\',\'Şehir ÇörekRating\')">'
+      +'<div class="city-hd"><div><div class="city-nm">'+c.name+'</div><div class="city-sub">'+c.country+' · '+c.budget+'</div></div>'
+      +'<div style="display:flex;align-items:center;gap:6px;"><span style="font-size:22px">'+c.flag+'</span>'+crRing(sc,col)+'</div></div>'
+      +'<div class="city-tags">'+c.tags.map(function(t){return'<span class="ctg">'+t+'</span>';}).join('')+'</div>'
+      +'<div class="city-desc">'+c.desc+'</div>'
+      +'<div class="city-sep"></div><div class="city-nl-ttl">Nightlife</div>'
+      +'<div class="city-nl-txt">'+c.nl+'</div>'
+      +'<div class="vibs">'+c.vibes.map(function(v){return'<span class="vib">'+v+'</span>';}).join('')+'</div>'
+      +'<div class="city-cta">Rating detayı için dokun ↗</div></div>';
+  }).join('');
+}
+
+function setFlt(f,btn){curFlt=f;document.querySelectorAll('.flt-row .fp').forEach(function(b){b.classList.remove('on');});btn.classList.add('on');renderEvents();}
+function setSFlt(f,btn){sFlt=f;document.querySelectorAll('.sug-flt .fp').forEach(function(b){b.classList.remove('on');});btn.classList.add('on');renderSuggestions();}
+function goTab(i,btn){document.querySelectorAll('.tab').forEach(function(b){b.classList.remove('on');});btn.classList.add('on');document.querySelectorAll('.pg').forEach(function(p,j){p.classList.toggle('on',i===j);});}
+
+loadSheets();
+renderSuggestions();
+renderCities();
+</script>
+</body>
+</html>
